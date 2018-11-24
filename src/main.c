@@ -10,37 +10,7 @@
 
 #define WIN_WIDTH 800
 #define WIN_HEIGHT 600
-
 #define PLAYER_LENGTH 30
-
-typedef struct Player {
-    Vector location;
-    Vector dir;
-} Player;
-
-// use some sort of linear interpolation algorithm here
-void player_move(Player *player, double amount) {
-    Vector offset = v_mult_int(v_sub(player->location, player->dir),
-                               amount / PLAYER_LENGTH) ;
-    player->location = v_add(player->location, offset);
-    player->dir = v_add(player->dir, offset);
-}
-
-void player_rotate(Player *player, double angle) {
-    double px = player->location.x;
-    double py = player->location.y;
-    double cx = player->dir.x;
-    double cy = player->dir.y;
-
-    cx -= px;
-    cy -= py;
-
-    double _cx = (cx * cos(angle)) - (cy * sin(angle));
-    double _cy = cx * sin(angle) + cy * cos(angle);
-
-    player->dir.x = _cx + px;
-    player->dir.y = _cy + py;
-}
 
 int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO);
@@ -63,26 +33,14 @@ int main(int argc, char *argv[]) {
     bool running = true;
     SDL_Event event;
 
-
-    Player player = { { WIN_WIDTH / 2, WIN_HEIGHT / 2 },
-                      { WIN_WIDTH / 2, WIN_HEIGHT / 2 + PLAYER_LENGTH } };
+    SDL_Rect player = { (WIN_WIDTH / 2) - 2, (WIN_HEIGHT / 2) - 2,
+                        2, 2};
 
     Level level = default_stage();
 
     while(running) {
         // move player
-        if (keys[SDL_SCANCODE_W]) {
-            player_move(&player, -1);
-        }
-        if (keys[SDL_SCANCODE_S]) {
-            player_move(&player, 1);
-        }
-        if (keys[SDL_SCANCODE_A]) {
-            player_rotate(&player, -0.05);
-        }
-        if (keys[SDL_SCANCODE_D]) {
-            player_rotate(&player, 0.05);
-        }
+        level_handle_input(&level, keys);
 
         // printf("%.0f,%.0f\n", player.location.x, player.location.y);
 
@@ -99,7 +57,7 @@ int main(int argc, char *argv[]) {
 
         // draw player
         SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-        SDL_RenderDrawLine(renderer, player.location.x, player.location.y, player.dir.x, player.dir.y);
+        SDL_RenderFillRect(renderer, &player);
 
         SDL_RenderPresent(renderer);
     }

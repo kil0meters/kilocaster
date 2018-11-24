@@ -1,4 +1,4 @@
-TARGET   = kilotracer
+TARGET   = kilocaster
 
 CC       = gcc
 # compiling flags here
