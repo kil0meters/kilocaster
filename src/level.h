@@ -27,7 +27,11 @@ typedef struct Level {
 } Level;
 
 Level default_stage();
-void level_render(SDL_Renderer *renderer, Level level);
+Level load_stage_from_file(const char *filename);
+
+void level_render_2d(SDL_Renderer *renderer, Level level);
+void level_render_3d(SDL_Renderer *renderer, Level level);
+
 void level_handle_input(Level *level, const uint8_t *keys);
 
 
