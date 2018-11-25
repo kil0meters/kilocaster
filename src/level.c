@@ -14,7 +14,6 @@ typedef struct Ray {
     Color color;
 } Ray;
 
-// Wall *walls;
 Level load_stage_from_file(const char *filename) {
     FILE *file = fopen(filename, "r");
 
@@ -103,23 +102,19 @@ static bool line_collision(Vector a1,
 
     if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
     {
-        // Collision detected
         intersection_point->x = a1.x + (t * s1_x);
         intersection_point->y = a1.y + (t * s1_y);
-        return 1;
+        return true;
     }
 
-    return 0; // No collision
+    return false;
 }
 
 // tests if a ray collides with a given wall
 static Ray test_ray(Wall wall, double angle) {
     Vector center = { WIN_WIDTH / 2, WIN_HEIGHT / 2 };
 
-    // this doesn't work. should be based on angle
     Vector max_length = { center.x + 800 * cos(angle), center.y + 800 * sin(angle) };
-
-    // SDL_RenderDrawLine(renderer, center.x, center.y, max_length.x, max_length.y);
 
     Ray ray = {angle, 1.0, {0,0,0}};
 
@@ -139,7 +134,7 @@ static Ray test_ray(Wall wall, double angle) {
 void level_render_3d(SDL_Renderer *renderer, Level level) {
     Wall *walls = level.walls;
     for (int x = 0; x < WIN_WIDTH; x++) {
-        double angle = (((double) x / 763.9433)) - 2.094395; // * 50.0); // - 55.5;
+        double angle = (((double) x / 763.9433)) - 2.094395;
 
         for (int j = 0; j < level.num_walls; j++) {
             Wall adjusted_wall = {
@@ -148,7 +143,6 @@ void level_render_3d(SDL_Renderer *renderer, Level level) {
                 walls[j].color
             };
 
-            // SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
             Ray ray = test_ray(adjusted_wall, angle);
             if (ray.color.r != 0 ||
                 ray.color.g != 0 ||

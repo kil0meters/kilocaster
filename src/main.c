@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include <math.h>
 #include <stdint.h>
 
 #include <SDL2/SDL.h>
@@ -10,6 +9,11 @@
 #include "screen.h"
 
 int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        fprintf(stderr, "error: Expected level file as arugment\n");
+        return 1;
+    }
+
     SDL_Init(SDL_INIT_VIDEO);
 
     SDL_Window *window = SDL_CreateWindow("raycaster",
@@ -34,11 +38,8 @@ int main(int argc, char *argv[]) {
     Level level = load_stage_from_file(argv[1]);
 
     while(running) {
-
         // move player
         level_handle_input(&level, keys);
-
-        // printf("%.0f,%.0f\n", player.location.x, player.location.y);
 
         while(SDL_PollEvent(&event)) {
             if(event.type == SDL_QUIT)
